@@ -1,0 +1,12 @@
+name: redux_epics
+author: Brian Egan <brian@brianegan.com>
+description: A redux.dart Middleware to support the use of Streams
+homepage: http://github.com/brianegan/redux_dart_streams_middleware
+version: 0.1.0
+
+dependencies:
+  rxdart: ">=0.3.25 <0.4.0"
+  redux: ">=1.1.0 <2.0.0"
+
+dev_dependencies:
+  test: 0.12.15+9
