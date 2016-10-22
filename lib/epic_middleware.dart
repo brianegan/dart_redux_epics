@@ -9,13 +9,14 @@ import 'package:rxdart/rxdart.dart';
 ///
 /// It is recommended that you put your `EpicMiddleware` first when constructing
 /// the list of middleware for your store so any actions dispatched from
-/// your Epic will be intercepted by the remaining Middleware.
+/// your [Epic] will be intercepted by the remaining Middleware.
 ///
 /// Example:
 ///
-///    var epicMiddleware = new EpicMiddleware(new ExampleEpic());
-///    var store = new Store<List<Action>, Action>(reducer,
-///      initialState: [], middleware: [epicMiddleware]);
+///     var epicMiddleware = new EpicMiddleware(new ExampleEpic());
+///     var store = new Store<List<Action>, Action>(reducer,
+///       initialState: [], middleware: [epicMiddleware]);
+///
 class EpicMiddleware<State, Action> extends Middleware<State, Action> {
   final StreamController<Action> actions =
       new StreamController.broadcast(sync: true);

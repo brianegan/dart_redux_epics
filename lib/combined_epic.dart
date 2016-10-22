@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'package:redux_epics/epic.dart';
 import 'package:redux_epics/epic_store.dart';
+import 'package:redux_epics/epic_middleware.dart';
 import 'package:rxdart/rxdart.dart';
 
-/// Combines a list of Epics into one.
+/// Combines a list of [Epic]s into one.
 ///
-/// Rather than having one "God" Epic, it's recommended to break
-/// Epics down into smaller, more manageable units. Then, when creating
-/// the EpicMiddleware for your redux.dart store, simply combine your Epics
+/// Rather than having one "God" [Epic], it's recommended to break
+/// [Epic]s down into smaller, more manageable units. Then, when creating
+/// the [EpicMiddleware] for your redux.dart store, simply combine your [Epics
 /// using this class.
 ///
 /// Example:

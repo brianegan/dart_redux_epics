@@ -7,7 +7,7 @@ import 'test_utils.dart';
 
 main() {
   group('Epic Middleware', () {
-    test('accept an Epic that transforms one Action into another', () {
+    test('accepts an Epic that transforms one Action into another', () {
       var reducer = new ListOfActionsReducer();
       var epicMiddleware = new EpicMiddleware(new Fire1Epic());
       var store = new Store<List<Action>, Action>(reducer,
