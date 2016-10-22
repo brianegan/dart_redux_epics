@@ -42,7 +42,7 @@ class ExampleEpic extends Epic<State, Action> {
 Now that we've got an epic to work with, we need to wire it up to our Redux store so it can receive a stream of actions. In order to do this, we'll employ the `EpicMiddleware`.
 
 ```dart
-import 'package:redux/epic_middleware.dart';
+import 'package:redux_epics/epic_middleware.dart';
 import 'package:redux/redux.dart';
 
 var reducer = new FakeReducer();
@@ -57,6 +57,8 @@ Rather than having one massive Epic that handles every possible type of action, 
 However, the `EpicMiddleware` accepts only one Epic. So what are we to do? Fear not: redux_epics includes class for combining Epics together!
 
 ```dart
+import 'package:redux_epics/combined_epic.dart';
+
 var epic = new CombinedEpic<State, Action>([
   new SearchEpic(), 
   new ChatEpic(), 
