@@ -1,8 +1,9 @@
 import 'dart:async';
+
 import 'package:redux/redux.dart';
-import 'package:redux_epics/combined_epic.dart';
-import 'package:redux_epics/epic_middleware.dart';
+import 'package:redux_epics/redux_epics.dart';
 import 'package:test/test.dart';
+
 import 'test_utils.dart';
 
 main() {
@@ -35,20 +36,21 @@ main() {
 
     test('work with async epics', () async {
       var reducer = new ListOfActionsReducer();
-      var epicMiddleware = new EpicMiddleware(new FireUntilEpic());
+      var epicMiddleware = new EpicMiddleware(new CancelableEpic());
       var store = new Store<List<Action>, Action>(reducer,
           initialState: [], middleware: [epicMiddleware]);
 
       store.dispatch(new Fire1());
 
-      await new Future.delayed(new Duration(milliseconds: 10));
+      await new Future.delayed(new Duration(milliseconds: 10)).catchError((
+          error) => new Duration(days: 1));
 
       expect(store.state, equals([new Fire1(), new Action1()]));
     });
 
     test('work with takeUntil async epics', () async {
       var reducer = new ListOfActionsReducer();
-      var epicMiddleware = new EpicMiddleware(new FireUntilEpic());
+      var epicMiddleware = new EpicMiddleware(new CancelableEpic());
       var store = new Store<List<Action>, Action>(reducer,
           initialState: [], middleware: [epicMiddleware]);
 
@@ -71,7 +73,7 @@ main() {
 
       expect(store.state, equals([new Fire1(), new Action1(), new Fire2()]));
 
-      epicMiddleware.replaceEpic(new Fire2Epic());
+      epicMiddleware.epic = new Fire2Epic();
 
       store.dispatch(new Fire1());
       store.dispatch(new Fire2());

@@ -1,7 +1,7 @@
 import 'dart:async';
+
 import 'package:redux/redux.dart';
-import 'package:redux_epics/epic.dart';
-import 'package:redux_epics/epic_store.dart';
+import 'package:redux_epics/redux_epics.dart';
 import 'package:rxdart/rxdart.dart';
 
 class Action {}
@@ -96,7 +96,7 @@ class Fire2Epic extends Epic<List<Action>, Action> {
   }
 }
 
-class FireUntilEpic extends Epic<List<Action>, Action> {
+class CancelableEpic extends Epic<List<Action>, Action> {
   @override
   Stream<Action> map(
           Stream<Action> actions, EpicStore<List<Action>, Action> store) =>

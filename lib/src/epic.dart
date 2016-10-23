@@ -1,16 +1,18 @@
 import 'dart:async';
-import 'package:redux_epics/epic_store.dart';
 
-/// An Epic is the core primitive of redux_epics.
+import 'package:redux_epics/src/epic_store.dart';
+
+/// An class that transforms one stream of actions into another
+/// stream of actions.
 ///
-/// It is a essentially a function which takes a stream of actions and
-/// returns a stream of actions. Actions in, actions out.
+/// Actions in, actions out.
 ///
-/// This is a simple, yet powerful abstraction that allows one to use the
-/// power of streams to handle the flow of actions. Once you're inside your
-/// Epic, use any stream patterns you desire as long as anything output from the
-/// final, returned stream, is an action. The actions you emit will be
-/// immediately dispatched through the rest of the middleware chain.
+/// The best part: Epics are based on Dart Streams. This makes routine tasks
+/// easy, and complex tasks such as asynchronous error handling, cancellation,
+/// and debouncing a breeze. Once you're inside your Epic, use any stream
+/// patterns you desire as long as anything output from the final, returned
+/// stream, is an action. The actions you emit will be immediately dispatched
+/// through the rest of the middleware chain.
 ///
 /// Epics run alongside the normal Redux dispatch channel, meaning you cannot
 /// accidentally "swallow" an incoming action. Actions always run through the
@@ -28,19 +30,24 @@ import 'package:redux_epics/epic_store.dart';
 /// receives to only the `Action` it is interested in: the `PerformSearchAction`.
 /// Then, we need to make a network request using the provided search term.
 /// Finally, we need to transform those results into an action that contains
-/// the search results
+/// the search results. If an error has occurred, we'll want to return an
+/// error action so our app can respond accordingly.
 ///
 /// ### Code
 ///
 ///     class ExampleEpic extends Epic<State, Action> {
-///        @override
-///        Stream<Action> map(Stream<Action> actions, EpicStore<State, Action> store) {
+///       @override
+///       Stream<Action> map(Stream<Action> actions, EpicStore<State, Action> store) {
 ///         return actions
 ///           .where((action) => action is PerformSearchAction)
-///           .asyncMap((action) => api.search((action as PerformSearch).searchTerm))
-///           .map((results) => new SearchResultsAction(results));
+///           .asyncMap((action) =>
+///             // Pseudo api that returns a Future of SearchResults
+///             api.search((action as PerformSearch).searchTerm)
+///               .then((results) => new SearchResultsAction(results))
+///               .catchError((error) => new SearchErrorAction(error)));
 ///       }
 ///     }
+
 abstract class Epic<State, Action> {
   Stream<Action> map(Stream<Action> actions, EpicStore<State, Action> store);
 }
