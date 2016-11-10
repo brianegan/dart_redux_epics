@@ -1,4 +1,4 @@
-# Redux Epics
+# Redux Epics ![Travis Build Status](https://api.travis-ci.org/brianegan/dart_redux_epics.svg?branch=master)
 
 [Redux](https://pub.dartlang.org/packages/redux) is great for synchronous updates to a store in response to actions. However, it does not have any built-in mechanisms for asynchronous operations, such as making an api call or retrieving information from a database in response to an action. This is where Epics come in!
 
@@ -77,19 +77,7 @@ This is where streams really shine. In the following example, we'll employ the r
 import 'package:redux_epics/redux_epics.dart';
 import 'package:rxdart/rxdart.dart';
 
-class ExampleEpic extends Epic<State, Action> {
-   @override
-   Stream<Action> map(Stream<Action> actions, EpicStore<State, Action> store) {
-    return actions
-      .where((action) => action is PerformSearchAction)
-      .asyncMap((action) => 
-        // Pseudo api that returns a Future of SearchResults
-        api.search((action as PerformSearch).searchTerm)
-          .then((results) => new SearchResultsAction(results))
-          .catchError((error) => new SearchErrorAction(error)));
-  }
-}
-
+// This class is almost identical to ExampleEpic above
 class CancelableSearchEpic extends Epic<State, Action> {
   @override
   Stream<Action> map(Stream<Action> actions, EpicStore<State, Action> store) =>
