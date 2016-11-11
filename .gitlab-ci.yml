@@ -1,0 +1,8 @@
+image: google/dart
+
+stages:
+  - test
+
+test:
+  stage: test
+  script: pub get && pub run test
