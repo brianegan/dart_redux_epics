@@ -60,6 +60,12 @@ main() {
       await new Future.delayed(new Duration(milliseconds: 10));
 
       expect(store.state, equals([new Fire1(), new Fire2()]));
+
+      store.dispatch(new Fire1());
+
+      await new Future.delayed(new Duration(milliseconds: 10));
+
+      expect(store.state, equals([new Fire1(), new Fire2(), new Fire1(), new Action1()]));
     });
 
     test('can replace the current Epic', () {

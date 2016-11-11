@@ -34,7 +34,7 @@ class EpicMiddleware<State, Action> extends Middleware<State, Action> {
     if (!_isSubscribed) {
       observable(_epics.stream)
           .flatMapLatest(
-          (epic) => epic.map(_actions.stream, new EpicStore(store)))
+              (epic) => epic.map(_actions.stream, new EpicStore(store)))
           .listen((action) => next(action));
 
       _epics.add(_epic);

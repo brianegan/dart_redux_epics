@@ -1,4 +1,4 @@
-# Redux Epics ![Travis Build Status](https://api.travis-ci.org/brianegan/dart_redux_epics.svg?branch=master)
+# Redux Epics [![Travis Build Status](https://api.travis-ci.org/brianegan/dart_redux_epics.svg?branch=master)](https://travis-ci.org/brianegan/dart_redux_epics)
 
 [Redux](https://pub.dartlang.org/packages/redux) is great for synchronous updates to a store in response to actions. However, it does not have any built-in mechanisms for asynchronous operations, such as making an api call or retrieving information from a database in response to an action. This is where Epics come in!
 
