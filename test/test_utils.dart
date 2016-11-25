@@ -119,3 +119,15 @@ class FireTwoActionsEpic extends Epic<List<Action>, Action> {
             ]));
   }
 }
+
+class RecordingEpic extends Epic<List<Action>, Action> {
+  EpicStore<List<Action>, Action> store;
+
+  @override
+  Stream<Action> map(Stream<Action> actions,
+      EpicStore<List<Action>, Action> store) {
+    this.store = store;
+
+    return actions;
+  }
+}

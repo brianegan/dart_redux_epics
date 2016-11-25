@@ -42,8 +42,8 @@ main() {
 
       store.dispatch(new Fire1());
 
-      await new Future.delayed(new Duration(milliseconds: 10)).catchError((
-          error) => new Duration(days: 1));
+      await new Future.delayed(new Duration(milliseconds: 10))
+          .catchError((error) => new Duration(days: 1));
 
       expect(store.state, equals([new Fire1(), new Action1()]));
     });
@@ -65,35 +65,27 @@ main() {
 
       await new Future.delayed(new Duration(milliseconds: 10));
 
-      expect(store.state, equals([new Fire1(), new Fire2(), new Fire1(), new Action1()]));
+      expect(store.state,
+          equals([new Fire1(), new Fire2(), new Fire1(), new Action1()]));
     });
 
     test('can replace the current Epic', () {
       var reducer = new ListOfActionsReducer();
-      var epicMiddleware = new EpicMiddleware(new Fire1Epic());
+      var originalEpic = new Fire1Epic();
+      var replacementEpic = new Fire2Epic();
+      var epicMiddleware = new EpicMiddleware(originalEpic);
       var store = new Store<List<Action>, Action>(reducer,
           initialState: [], middleware: [epicMiddleware]);
 
-      store.dispatch(new Fire1());
-      store.dispatch(new Fire2());
+      expect(epicMiddleware.epic, equals(originalEpic));
 
-      expect(store.state, equals([new Fire1(), new Action1(), new Fire2()]));
-
-      epicMiddleware.epic = new Fire2Epic();
+      epicMiddleware.epic = replacementEpic;
 
       store.dispatch(new Fire1());
       store.dispatch(new Fire2());
 
-      expect(
-          store.state,
-          equals([
-            new Fire1(),
-            new Action1(),
-            new Fire2(),
-            new Fire1(),
-            new Fire2(),
-            new Action2()
-          ]));
+      expect(epicMiddleware.epic, equals(replacementEpic));
+      expect(store.state, equals([new Fire1(), new Fire2(), new Action2()]));
     });
 
     test('can fire multiple events from epics', () async {
@@ -111,6 +103,19 @@ main() {
       await new Future.delayed(new Duration(milliseconds: 10));
 
       expect(store.state, equals([new Fire1(), new Action1(), new Action2()]));
+    });
+
+    test('passes the current state of the redux store to the Epic', () {
+      var reducer = new ListOfActionsReducer();
+      var epic = new RecordingEpic();
+      var epicMiddleware = new EpicMiddleware(epic);
+      var initialState = [new Action1()];
+      var store = new Store<List<Action>, Action>(reducer,
+          initialState: initialState, middleware: [epicMiddleware]);
+
+      store.dispatch(new Fire1());
+
+      expect(epic.store.state, equals(initialState));
     });
   });
 }
