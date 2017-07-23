@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:redux/redux.dart';
 import 'package:redux_epics/src/epic.dart';
 import 'package:redux_epics/src/epic_store.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/transformers.dart';
 
 /// A [Redux](https://pub.dartlang.org/packages/redux) middleware that passes
 /// a stream of dispatched actions to the given [Epic].
@@ -32,9 +32,9 @@ class EpicMiddleware<State, Action> extends Middleware<State, Action> {
   @override
   call(Store<State, Action> store, Action action, NextDispatcher next) {
     if (!_isSubscribed) {
-      observable(_epics.stream)
-          .flatMapLatest(
-              (epic) => epic.map(_actions.stream, new EpicStore(store)))
+      _epics.stream
+          .transform(new FlatMapLatestStreamTransformer(
+              (epic) => epic.map(_actions.stream, new EpicStore(store))))
           .listen((action) => next(action));
 
       _epics.add(_epic);

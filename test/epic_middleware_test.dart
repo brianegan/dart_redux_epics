@@ -14,9 +14,9 @@ main() {
       var store = new Store<List<Action>, Action>(reducer,
           initialState: [], middleware: [epicMiddleware]);
 
-      store.dispatch(new Fire1());
+      store.dispatch(new Request1());
 
-      expect(store.state, equals([new Fire1(), new Action1()]));
+      expect(store.state, equals([new Request1(), new Response1()]));
     });
 
     test('can combine Epics', () {
@@ -27,11 +27,17 @@ main() {
       var store = new Store<List<Action>, Action>(reducer,
           initialState: [], middleware: [epicMiddleware]);
 
-      store.dispatch(new Fire1());
-      store.dispatch(new Fire2());
+      store.dispatch(new Request1());
+      store.dispatch(new Request2());
 
-      expect(store.state,
-          equals([new Fire1(), new Action1(), new Fire2(), new Action2()]));
+      expect(
+          store.state,
+          equals([
+            new Request1(),
+            new Response1(),
+            new Request2(),
+            new Response2()
+          ]));
     });
 
     test('work with async epics', () async {
@@ -40,12 +46,12 @@ main() {
       var store = new Store<List<Action>, Action>(reducer,
           initialState: [], middleware: [epicMiddleware]);
 
-      store.dispatch(new Fire1());
+      store.dispatch(new Request1());
 
       await new Future.delayed(new Duration(milliseconds: 10))
           .catchError((error) => new Duration(days: 1));
 
-      expect(store.state, equals([new Fire1(), new Action1()]));
+      expect(store.state, equals([new Request1(), new Response1()]));
     });
 
     test('work with takeUntil async epics', () async {
@@ -54,19 +60,25 @@ main() {
       var store = new Store<List<Action>, Action>(reducer,
           initialState: [], middleware: [epicMiddleware]);
 
-      store.dispatch(new Fire1());
-      store.dispatch(new Fire2());
+      store.dispatch(new Request1());
+      store.dispatch(new Request2());
 
       await new Future.delayed(new Duration(milliseconds: 10));
 
-      expect(store.state, equals([new Fire1(), new Fire2()]));
+      expect(store.state, equals([new Request1(), new Request2()]));
 
-      store.dispatch(new Fire1());
+      store.dispatch(new Request1());
 
       await new Future.delayed(new Duration(milliseconds: 10));
 
-      expect(store.state,
-          equals([new Fire1(), new Fire2(), new Fire1(), new Action1()]));
+      expect(
+          store.state,
+          equals([
+            new Request1(),
+            new Request2(),
+            new Request1(),
+            new Response1()
+          ]));
     });
 
     test('can replace the current Epic', () {
@@ -81,11 +93,12 @@ main() {
 
       epicMiddleware.epic = replacementEpic;
 
-      store.dispatch(new Fire1());
-      store.dispatch(new Fire2());
+      store.dispatch(new Request1());
+      store.dispatch(new Request2());
 
       expect(epicMiddleware.epic, equals(replacementEpic));
-      expect(store.state, equals([new Fire1(), new Fire2(), new Action2()]));
+      expect(store.state,
+          equals([new Request1(), new Request2(), new Response2()]));
     });
 
     test('can fire multiple events from epics', () async {
@@ -94,26 +107,27 @@ main() {
       var store = new Store<List<Action>, Action>(reducer,
           initialState: [], middleware: [epicMiddleware]);
 
-      store.dispatch(new Fire1());
+      store.dispatch(new Request1());
 
       await new Future.delayed(new Duration(milliseconds: 1));
 
-      expect(store.state, equals([new Fire1(), new Action1()]));
+      expect(store.state, equals([new Request1(), new Response1()]));
 
       await new Future.delayed(new Duration(milliseconds: 10));
 
-      expect(store.state, equals([new Fire1(), new Action1(), new Action2()]));
+      expect(store.state,
+          equals([new Request1(), new Response1(), new Response2()]));
     });
 
     test('passes the current state of the redux store to the Epic', () {
       var reducer = new ListOfActionsReducer();
       var epic = new RecordingEpic();
       var epicMiddleware = new EpicMiddleware(epic);
-      var initialState = [new Action1()];
+      var initialState = [new Response1()];
       var store = new Store<List<Action>, Action>(reducer,
           initialState: initialState, middleware: [epicMiddleware]);
 
-      store.dispatch(new Fire1());
+      store.dispatch(new Request1());
 
       expect(epic.store.state, equals(initialState));
     });

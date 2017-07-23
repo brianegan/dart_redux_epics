@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:redux_epics/src/epic.dart';
 import 'package:redux_epics/src/epic_middleware.dart';
 import 'package:redux_epics/src/epic_store.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/streams.dart';
 
 /// Combines a list of [Epic]s into one.
 ///
@@ -31,6 +31,6 @@ class CombinedEpic<State, Action> extends Epic<State, Action> {
 
   @override
   Stream<Action> map(Stream<Action> actions, EpicStore<State, Action> store) {
-    return new Observable.merge(_epics.map((epic) => epic.map(actions, store)));
+    return new MergeStream(_epics.map((epic) => epic.map(actions, store)));
   }
 }
