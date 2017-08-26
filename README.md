@@ -23,17 +23,14 @@ Here's what this looks like in code.
 import 'dart:async';
 import 'package:redux_epics/redux_epics.dart';
 
-class ExampleEpic extends Epic<State, Action> {
-   @override
-   Stream<Action> map(Stream<Action> actions, EpicStore<State, Action> store) {
-    return actions
-      .where((action) => action is PerformSearchAction)
-      .asyncMap((action) => 
-        // Pseudo api that returns a Future of SearchResults
-        api.search((action as PerformSearch).searchTerm)
-          .then((results) => new SearchResultsAction(results))
-          .catchError((error) => new SearchErrorAction(error)));
-  }
+Stream<dynamic> exampleEpic(Stream<dynamic> actions, EpicStore<State> store) {
+  return actions
+    .where((action) => action is PerformSearchAction)
+    .asyncMap((action) => 
+      // Pseudo api that returns a Future of SearchResults
+      api.search((action as PerformSearch).searchTerm)
+        .then((results) => new SearchResultsAction(results))
+        .catchError((error) => new SearchErrorAction(error)));
 }
 ```
 
@@ -45,24 +42,23 @@ Now that we've got an epic to work with, we need to wire it up to our Redux stor
 import 'package:redux_epics/redux_epics.dart';
 import 'package:redux/redux.dart';
 
-var reducer = new FakeReducer();
-var epicMiddleware = new EpicMiddleware(new ExampleEpic());
-var store = new Store<State, Action>(reducer, middleware: [epicMiddleware]);
+var epicMiddleware = new EpicMiddleware(exampleEpic);
+var store = new Store<State>(fakeReducer, middleware: [epicMiddleware]);
 ```
 
 ## Combining Epics
 
-Rather than having one massive Epic that handles every possible type of action, it's best to break Epics down into smaller, more manageable and testable units. This way we could have a `SearchEpic`, a `ChatEpic`, and an `UpdateProfileEpic`, for example. 
+Rather than having one massive Epic that handles every possible type of action, it's best to break Epics down into smaller, more manageable and testable units. This way we could have a `searchEpic`, a `chatEpic`, and an `updateProfileEpic`, for example. 
 
 However, the `EpicMiddleware` accepts only one Epic. So what are we to do? Fear not: redux_epics includes class for combining Epics together!
 
 ```dart
 import 'package:redux_epics/redux_epics.dart';
-
-var epic = new CombinedEpic<State, Action>([
-  new SearchEpic(), 
-  new ChatEpic(), 
-  new UpdateProfileEpic()]);
+final epic = combineEpics<State>([
+  searchEpic, 
+  chatEpic, 
+  updateProfileEpic,
+]);
 ```
 
 ## Recipes
@@ -78,19 +74,19 @@ import 'package:redux_epics/redux_epics.dart';
 import 'package:rxdart/rxdart.dart';
 
 // This class is almost identical to ExampleEpic above
-class CancelableSearchEpic extends Epic<State, Action> {
-  @override
-  Stream<Action> map(Stream<Action> actions, EpicStore<State, Action> store) =>
-      observable(actions)
-        .where((action) => action is PerformSearchAction)
-        .asyncMap((action) => 
-          api.search((action as PerformSearch).searchTerm)
-            .then((results) => new SearchResultsAction(results))
-            .catchError((error) => new SearchErrorAction(error)))
-            
-        // This is the trick. We use the takeUntil operator 
-        // from rx.dart to cancel the async operation in response 
-        // to a CancelSearchAction
-        .takeUntil(actions.where((action) => action is CancelSearchAction));                
+Stream<dynamic> cancelableSearchEpic(Stream<dynamic> actions, EpicStore<State> store) {
+  // Wrap our actions Stream as an Observable. This will enhance the stream with
+  // a bit of extra functionality.
+  return new Observable(actions)
+    .where((action) => action is PerformSearchAction)
+    .asyncMap((action) => 
+      api.search((action as PerformSearch).searchTerm)
+        .then((results) => new SearchResultsAction(results))
+        .catchError((error) => new SearchErrorAction(error)))
+        
+    // This is the trick. We use the takeUntil operator 
+    // from rx.dart to cancel the async operation in response 
+    // to a CancelSearchAction
+    .takeUntil(actions.where((action) => action is CancelSearchAction));
 }
 ```

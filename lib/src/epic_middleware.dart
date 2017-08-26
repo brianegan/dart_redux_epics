@@ -17,25 +17,24 @@ import 'package:rxdart/transformers.dart';
 ///     var epicMiddleware = new EpicMiddleware(new ExampleEpic());
 ///     var store = new Store<List<Action>, Action>(reducer,
 ///       initialState: [], middleware: [epicMiddleware]);
-
-class EpicMiddleware<State, Action> extends Middleware<State, Action> {
-  final StreamController<Action> _actions =
+class EpicMiddleware<State> extends MiddlewareClass<State> {
+  final StreamController<dynamic> _actions =
       new StreamController.broadcast(sync: true);
-  final StreamController<Epic<State, Action>> _epics =
+  final StreamController<Epic<State>> _epics =
       new StreamController.broadcast(sync: true);
 
-  Epic<State, Action> _epic;
+  Epic<State> _epic;
   bool _isSubscribed = false;
 
   EpicMiddleware(this._epic);
 
   @override
-  call(Store<State, Action> store, Action action, NextDispatcher next) {
+  call(Store<State> store, action, NextDispatcher next) {
     if (!_isSubscribed) {
       _epics.stream
           .transform(new FlatMapLatestStreamTransformer(
-              (epic) => epic.map(_actions.stream, new EpicStore(store))))
-          .listen((action) => next(action));
+              (epic) => epic(_actions.stream, new EpicStore(store))))
+          .listen(next);
 
       _epics.add(_epic);
 
@@ -51,9 +50,9 @@ class EpicMiddleware<State, Action> extends Middleware<State, Action> {
   /// Replacing epics is considered an advanced API. You might need this if your
   /// app grows large and want to instantiate Epics on the fly, rather than
   /// as a whole up front.
-  Epic<State, Action> get epic => _epic;
+  Epic<State> get epic => _epic;
 
-  set epic(Epic<State, Action> newEpic) {
+  set epic(Epic<State> newEpic) {
     _epic = newEpic;
 
     _epics.add(newEpic);

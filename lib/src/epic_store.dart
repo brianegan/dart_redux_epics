@@ -5,9 +5,8 @@ import 'package:redux_epics/src/epic.dart';
 ///
 /// Due to the way streams are implemented with Dart, it's impossible to
 /// perform `store.dispatch` from within an [Epic] or observe the store directly.
-
-class EpicStore<State, Action> {
-  final Store<State, Action> _store;
+class EpicStore<State> {
+  final Store<State> _store;
 
   EpicStore(this._store);
 

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:redux_epics/src/epic_store.dart';
 
-/// An class that transforms one stream of actions into another
+/// A function that transforms one stream of actions into another
 /// stream of actions.
 ///
 /// Actions in, actions out.
@@ -35,9 +35,30 @@ import 'package:redux_epics/src/epic_store.dart';
 ///
 /// ### Code
 ///
-///     class ExampleEpic extends Epic<State, Action> {
+///     Stream<dynamic> exampleEpic(
+///       Stream<dynamic> actions,
+///       EpicStore<State> store,
+///     ) {
+///       return actions
+///         .where((action) => action is PerformSearchAction)
+///         .asyncMap((action) =>
+///           // Pseudo api that returns a Future of SearchResults
+///           api.search((action as PerformSearch).searchTerm)
+///             .then((results) => new SearchResultsAction(results))
+///             .catchError((error) => new SearchErrorAction(error)));
+///     }
+typedef Stream<dynamic> Epic<State>(
+    Stream<dynamic> actions, EpicStore<State> store);
+
+/// A class that acts as an [Epic], transforming one stream of actions into
+/// another stream of actions. Generally, [Epic] functions are simpler, but
+/// you may have advanced use cases that require a type-safe class.
+///
+/// ### Example
+///
+///     class ExampleEpic extends EpicClass<State> {
 ///       @override
-///       Stream<Action> map(Stream<Action> actions, EpicStore<State, Action> store) {
+///       Stream<dynamic> map(Stream<dynamic> actions, EpicStore<State> store) {
 ///         return actions
 ///           .where((action) => action is PerformSearchAction)
 ///           .asyncMap((action) =>
@@ -47,7 +68,9 @@ import 'package:redux_epics/src/epic_store.dart';
 ///               .catchError((error) => new SearchErrorAction(error)));
 ///       }
 ///     }
-
-abstract class Epic<State, Action> {
-  Stream<Action> map(Stream<Action> actions, EpicStore<State, Action> store);
+abstract class EpicClass<State> {
+  Stream<dynamic> call(
+    Stream<dynamic> actions,
+    EpicStore<State> store,
+  );
 }

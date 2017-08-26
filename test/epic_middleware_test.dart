@@ -8,10 +8,13 @@ import 'test_utils.dart';
 
 main() {
   group('Epic Middleware', () {
+    test('EpicClass can work as an Epic', () {
+      expect(new RecordingEpic(), new isInstanceOf<Epic<List<Action>>>());
+    });
+
     test('accepts an Epic that transforms one Action into another', () {
-      var reducer = new ListOfActionsReducer();
-      var epicMiddleware = new EpicMiddleware(new Fire1Epic());
-      var store = new Store<List<Action>, Action>(reducer,
+      final epicMiddleware = new EpicMiddleware<List<Action>>(fire1Epic);
+      final store = new Store<List<Action>>(listOfActionsReducer,
           initialState: [], middleware: [epicMiddleware]);
 
       store.dispatch(new Request1());
@@ -20,11 +23,9 @@ main() {
     });
 
     test('can combine Epics', () {
-      var reducer = new ListOfActionsReducer();
-      var epic = new CombinedEpic<List<Action>, Action>(
-          [new Fire1Epic(), new Fire2Epic()]);
-      var epicMiddleware = new EpicMiddleware(epic);
-      var store = new Store<List<Action>, Action>(reducer,
+      final epic = combineEpics<List<Action>>([fire1Epic, fire2Epic]);
+      final epicMiddleware = new EpicMiddleware(epic);
+      final store = new Store<List<Action>>(listOfActionsReducer,
           initialState: [], middleware: [epicMiddleware]);
 
       store.dispatch(new Request1());
@@ -41,9 +42,8 @@ main() {
     });
 
     test('work with async epics', () async {
-      var reducer = new ListOfActionsReducer();
-      var epicMiddleware = new EpicMiddleware(new CancelableEpic());
-      var store = new Store<List<Action>, Action>(reducer,
+      final epicMiddleware = new EpicMiddleware(cancelableEpic);
+      final store = new Store<List<Action>>(listOfActionsReducer,
           initialState: [], middleware: [epicMiddleware]);
 
       store.dispatch(new Request1());
@@ -55,9 +55,8 @@ main() {
     });
 
     test('work with takeUntil async epics', () async {
-      var reducer = new ListOfActionsReducer();
-      var epicMiddleware = new EpicMiddleware(new CancelableEpic());
-      var store = new Store<List<Action>, Action>(reducer,
+      final epicMiddleware = new EpicMiddleware(cancelableEpic);
+      final store = new Store<List<Action>>(listOfActionsReducer,
           initialState: [], middleware: [epicMiddleware]);
 
       store.dispatch(new Request1());
@@ -82,11 +81,10 @@ main() {
     });
 
     test('can replace the current Epic', () {
-      var reducer = new ListOfActionsReducer();
-      var originalEpic = new Fire1Epic();
-      var replacementEpic = new Fire2Epic();
-      var epicMiddleware = new EpicMiddleware(originalEpic);
-      var store = new Store<List<Action>, Action>(reducer,
+      final originalEpic = fire1Epic;
+      final replacementEpic = fire2Epic;
+      final epicMiddleware = new EpicMiddleware(originalEpic);
+      final store = new Store<List<Action>>(listOfActionsReducer,
           initialState: [], middleware: [epicMiddleware]);
 
       expect(epicMiddleware.epic, equals(originalEpic));
@@ -102,9 +100,8 @@ main() {
     });
 
     test('can fire multiple events from epics', () async {
-      var reducer = new ListOfActionsReducer();
-      var epicMiddleware = new EpicMiddleware(new FireTwoActionsEpic());
-      var store = new Store<List<Action>, Action>(reducer,
+      final epicMiddleware = new EpicMiddleware(fireTwoActionsEpic);
+      final store = new Store<List<Action>>(listOfActionsReducer,
           initialState: [], middleware: [epicMiddleware]);
 
       store.dispatch(new Request1());
@@ -120,11 +117,10 @@ main() {
     });
 
     test('passes the current state of the redux store to the Epic', () {
-      var reducer = new ListOfActionsReducer();
-      var epic = new RecordingEpic();
-      var epicMiddleware = new EpicMiddleware(epic);
-      var initialState = [new Response1()];
-      var store = new Store<List<Action>, Action>(reducer,
+      final epic = new RecordingEpic();
+      final epicMiddleware = new EpicMiddleware(epic);
+      final initialState = [new Response1()];
+      final store = new Store<List<Action>>(listOfActionsReducer,
           initialState: initialState, middleware: [epicMiddleware]);
 
       store.dispatch(new Request1());
