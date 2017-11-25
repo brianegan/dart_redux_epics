@@ -91,10 +91,11 @@ Stream<dynamic> fire2Epic(
 }
 
 Stream<dynamic> cancelableEpic(
-    Stream<dynamic> actions, EpicStore<List<dynamic>> store) {
+  Stream<dynamic> actions,
+  EpicStore<List<dynamic>> store,
+) {
   return new Observable(actions).where((action) => action is Request1).flatMap(
-      (action) => new Observable.fromIterable([new Response1()])
-          .debounce(new Duration(milliseconds: 1))
+      (action) => new Observable.fromFuture(new Future.value(new Response1()))
           .takeUntil(actions.where((action) => action is Request2)));
 }
 
@@ -104,8 +105,7 @@ Stream<dynamic> fireTwoActionsEpic(
       .where((action) => action is Request1)
       .flatMap((action) => new Observable.merge([
             new Observable.fromIterable(<dynamic>[new Response1()]),
-            new Observable.fromIterable(<dynamic>[new Response2()])
-                .debounce(new Duration(milliseconds: 5))
+            new Observable.timer(new Response2(), new Duration(milliseconds: 5))
           ]));
 }
 

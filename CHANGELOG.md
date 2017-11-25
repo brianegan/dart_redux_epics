@@ -1,3 +1,7 @@
+# 0.6.1
+
+Improve docs, bump to ensure it works with latest RxDart.
+
 # 0.6.0
 
   * *Breaking Api Changes*
