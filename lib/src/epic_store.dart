@@ -12,4 +12,9 @@ class EpicStore<State> {
 
   /// Returns the current state of the redux store
   State get state => _store.state;
+
+  /// Dispatches actions
+  void dispatch(dynamic action) {
+    _store.dispatch(action);
+  }
 }

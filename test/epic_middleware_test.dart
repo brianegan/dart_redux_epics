@@ -162,5 +162,18 @@ main() {
 
       expect(epic.store.state, equals(initialState));
     });
+
+    test('dispatches actions dos not work', () async {
+      Stream<dynamic> dispatchingEpic(Stream<dynamic> actions, EpicStore<List<dynamic>> epicStore) {
+        epicStore.dispatch("This is gonna throw a bad state");
+        return actions;
+      }
+      final store = new Store<List<Action>>(
+        (state, action) => [],
+        middleware: [new EpicMiddleware(dispatchingEpic)],
+      );
+
+      store.dispatch(new Request1());
+    });
   });
 }
