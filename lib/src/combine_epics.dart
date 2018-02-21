@@ -17,13 +17,13 @@ import 'package:rxdart/streams.dart';
 ///
 /// Example:
 ///
-///     var epic = combineEpics<State>([
+///     final epic = combineEpics<State>([
 ///       searchEpic,
 ///       chatEpic,
 ///       updateProfileEpic,
 ///     ]);
 Epic<State> combineEpics<State>(List<Epic<State>> epics) {
   return (Stream<dynamic> actions, EpicStore<State> store) {
-    return new MergeStream(epics.map((epic) => epic(actions, store)));
+    return new MergeStream<dynamic>(epics.map((epic) => epic(actions, store)));
   };
 }

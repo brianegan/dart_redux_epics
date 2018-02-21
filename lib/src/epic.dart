@@ -19,6 +19,10 @@ import 'package:redux_epics/src/epic_store.dart';
 /// rest of your middleware chain to your reducers before your Epics even
 /// receive the next action.
 ///
+/// Note: Since the Actions you emit from your Epics are dispatched to your
+/// store, writing an Epic that simply returns the original actions Stream will
+/// result in an infinite loop. Do not do this!
+///
 /// ## Example
 ///
 /// Let's say your app has a search box. When a user submits a search term,
@@ -73,4 +77,58 @@ abstract class EpicClass<State> {
     Stream<dynamic> actions,
     EpicStore<State> store,
   );
+}
+
+/// An wrapper that allows you to create Epics which handle actions of a
+/// specific type, rather than all actions.
+///
+/// ### Example
+///
+///     Stream<dynamic> searchEpic(
+///       // Note: this epic only works with PerformSearchActions
+///       Stream<PerformSearchAction> actions,
+///       EpicStore<State> store,
+///     ) {
+///       return actions
+///         .asyncMap((action) =>
+///           api.search(action.searchTerm)
+///             .then((results) => new SearchResultsAction(results))
+///             .catchError((error) => new SearchErrorAction(error)));
+///     }
+///
+///     final epic = new TypedEpic<State, PerformSearchAction>(typedSearchEpic);
+///
+/// ### Combining Typed Epics
+///
+///     final epic = combineEpics([
+///       new TypedEpic<State, SearchAction>(searchEpic),
+///       new TypedEpic<State, ProfileAction>(profileEpic),
+///       new TypedEpic<State, ChatAction>(chatEpic),
+///     ]);
+class TypedEpic<State, Action> extends EpicClass<State> {
+  final Stream<dynamic> Function(
+    Stream<Action> actions,
+    EpicStore<State> store,
+  ) epic;
+
+  TypedEpic(this.epic);
+
+  @override
+  Stream<dynamic> call(Stream<dynamic> actions, EpicStore<State> store) {
+    return epic(
+      actions.transform(new _OfTypeTransformer<Action>()),
+      store,
+    );
+  }
+}
+
+class _OfTypeTransformer<Action> implements StreamTransformer<dynamic, Action> {
+  @override
+  Stream<Action> bind(Stream<dynamic> actions) async* {
+    await for (dynamic action in actions) {
+      if (action is Action) {
+        yield action;
+      }
+    }
+  }
 }
