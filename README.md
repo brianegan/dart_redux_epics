@@ -56,15 +56,42 @@ final epic = combineEpics<State>([
 ]);
 ```
 
-## Advanced Recipes using RxDart
+## Advanced Recipes
 
-In order to perform more advanced operations, it's helpful to use a library such as [RxDart](https://github.com/ReactiveX/rxdart).
+In order to perform more advanced operations, it's often helpful to use a library such as [RxDart](https://github.com/ReactiveX/rxdart).
 
 ### Casting
 
 In order to use this library effectively, you generally need filter down to actions of a certain type, such as `PerformSearchAction`. In the previous examples, you'll noticed that we need to filter using the `where` method on the Stream, and then manually cast (`action as SomeType`) later on.
 
-To more conveniently narrow down actions to those of a certain type, you can use the `ofType` method provided by RxDart. It will both perform a `where` check and then cast the action for you.
+To more conveniently narrow down actions to those of a certain type, you have two options:
+
+### TypedEpic
+
+The first option is to use the built-in `TypedEpic` class. This will allow you to write Epic functions that handle actions of a specific type, rather than all actions!
+
+```dart
+final epic = new TypedEpic<State, PerformSearchAction>(searchEpic);
+
+Stream<dynamic> searchEpic(
+  // Note: This epic only handles PerformSearchActions
+  Stream<PerformSearchAction> actions, 
+  EpicStore<State> store,
+) {
+  // Wrap our actions Stream as an Observable. This will enhance the stream with
+  // a bit of extra functionality.
+  return actions
+    .asyncMap((action) =>
+      // No need to cast the action to extract the search term!
+      api.search(action.searchTerm)
+        .then((results) => new SearchResultsAction(results))
+        .catchError((error) => new SearchErrorAction(error)));
+}
+```
+
+#### RxDart 
+
+You can use the `ofType` method provided by RxDart. It will both perform a `where` check and then cast the action for you.
 
 ```dart
 import 'package:redux_epics/redux_epics.dart';
@@ -77,7 +104,7 @@ Stream<dynamic> ofTypeEpic(Stream<dynamic> actions, EpicStore<State> store) {
     // Use `ofType` to narrow down to PerformSearchAction 
     .ofType(new TypeToken<PerformSearchAction>())
     .asyncMap((action) =>
-      // No need to action the action to extract the search term!
+      // No need to cast the action to extract the search term!
       api.search(action.searchTerm)
         .then((results) => new SearchResultsAction(results))
         .catchError((error) => new SearchErrorAction(error)));

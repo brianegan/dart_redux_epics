@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:redux_epics/redux_epics.dart';
 import 'package:rxdart/rxdart.dart';
 
-class Action {} // Lawsuit.
-
-class Request1 extends Action {
+class Request1 {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
@@ -20,7 +18,7 @@ class Request1 extends Action {
   }
 }
 
-class Request2 extends Action {
+class Request2 {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
@@ -35,7 +33,7 @@ class Request2 extends Action {
   }
 }
 
-class Response1 extends Action {
+class Response1 {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
@@ -50,7 +48,7 @@ class Response1 extends Action {
   }
 }
 
-class Response2 extends Action {
+class Response2 {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
@@ -65,57 +63,95 @@ class Response2 extends Action {
   }
 }
 
-List<Action> listOfActionsReducer(List<dynamic> state, dynamic action) {
-  if (action is Action) {
-    state.add(action);
-  }
-
-  return state;
+dynamic latestActionReducer(dynamic state, dynamic action) {
+  return action;
 }
 
 Stream<dynamic> fire1Epic(
   Stream<dynamic> actions,
-  EpicStore<List<Action>> store,
+  EpicStore<dynamic> store,
 ) {
   return actions
-      .where((action) => action is Request1)
-      .map((action) => new Response1());
+      .where((dynamic action) => action is Request1)
+      .map<Response1>((dynamic action) => new Response1());
 }
 
 Stream<dynamic> fire2Epic(
-    Stream<dynamic> actions, EpicStore<List<Action>> store) {
+  Stream<dynamic> actions,
+  EpicStore<dynamic> store,
+) async* {
+  await for (dynamic action in actions) {
+    if (action is Request2) {
+      yield new Response2();
+    }
+  }
+}
+
+Stream<dynamic> fire1TypedEpic(
+  Stream<Request1> actions,
+  EpicStore<dynamic> store,
+) {
+  return actions.map<Response1>((action) => new Response1());
+}
+
+Stream<dynamic> fire2TypedEpic(
+  Stream<Request2> actions,
+  EpicStore<dynamic> store,
+) async* {
+  await for (Request2 _ in actions) {
+    yield new Response2();
+  }
+}
+
+Stream<dynamic> pingEpic(
+  Stream<dynamic> actions,
+  EpicStore<dynamic> store,
+) {
   return actions
-      .where((action) => action is Request2)
-      .map((action) => (action as Request2))
-      .map((action) => new Response2());
+      .where((dynamic action) => action is Request1)
+      .map<Request2>((dynamic action) => new Request2());
+}
+
+Stream<dynamic> pongEpic(
+  Stream<dynamic> actions,
+  EpicStore<dynamic> store,
+) async* {
+  await for (dynamic action in actions) {
+    if (action is Request2) {
+      yield new Response2();
+    }
+  }
 }
 
 Stream<dynamic> cancelableEpic(
   Stream<dynamic> actions,
-  EpicStore<List<dynamic>> store,
+  EpicStore<dynamic> store,
 ) {
-  return new Observable(actions).where((action) => action is Request1).flatMap(
-      (action) => new Observable.fromFuture(new Future.value(new Response1()))
-          .takeUntil(actions.where((action) => action is Request2)));
+  return new Observable<dynamic>(actions)
+      .where((dynamic action) => action is Request1)
+      .flatMap<Response1>((dynamic action) =>
+          new Observable.fromFuture(new Future.value(new Response1()))
+              .takeUntil<dynamic>(
+                  actions.where((dynamic action) => action is Request2)));
 }
 
 Stream<dynamic> fireTwoActionsEpic(
-    Stream<dynamic> actions, EpicStore<List<dynamic>> store) {
-  return new Observable(actions)
-      .where((action) => action is Request1)
-      .flatMap((action) => new Observable.merge([
-            new Observable.fromIterable(<dynamic>[new Response1()]),
-            new Observable.timer(new Response2(), new Duration(milliseconds: 5))
-          ]));
+  Stream<dynamic> actions,
+  EpicStore<dynamic> store,
+) async* {
+  await for (dynamic _ in actions) {
+    yield new Response1();
+    yield new Response2();
+  }
 }
 
-class RecordingEpic extends EpicClass<List<dynamic>> {
-  EpicStore<List<dynamic>> store;
+class RecordingEpic extends EpicClass<dynamic> {
+  final StreamController<dynamic> states =
+      new StreamController<dynamic>(sync: true);
 
   @override
-  Stream<dynamic> call(
-      Stream<dynamic> actions, EpicStore<List<dynamic>> store) {
-    this.store = store;
+  Stream<dynamic> call(Stream<dynamic> actions, EpicStore<dynamic> store) {
+    states.add(store.state);
 
     return actions;
   }
