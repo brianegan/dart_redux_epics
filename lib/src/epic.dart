@@ -122,7 +122,8 @@ class TypedEpic<State, Action> extends EpicClass<State> {
   }
 }
 
-class _OfTypeTransformer<Action> implements StreamTransformer<dynamic, Action> {
+class _OfTypeTransformer<Action>
+    extends StreamTransformerBase<dynamic, Action> {
   @override
   Stream<Action> bind(Stream<dynamic> actions) async* {
     await for (dynamic action in actions) {

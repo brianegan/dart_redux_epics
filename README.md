@@ -4,7 +4,12 @@
 
 The best part: Epics are based on Dart Streams. This makes routine tasks easy, and complex tasks such as asynchronous error handling, cancellation, and debouncing a breeze.
 
-Note: For users unfamiliar with Streams, simple async cases are easier to handle with a normal Middleware Function. If normal Middleware Functions, [Thunks](https://pub.dartlang.org/packages/redux_thunk), or [Futures](https://pub.dartlang.org/packages/redux_future) work for you, you're doing it right!  When you find yourself dealing with more complex scenarios, such as writing an Autocomplete UI, check out the Recipes below to see how Streams / Epics can make your life easier. 
+Note: For users unfamiliar with Streams, simple async cases are easier to handle with a normal Middleware Function. If normal Middleware Functions, [Thunks](https://pub.dartlang.org/packages/redux_thunk), or [Futures](https://pub.dartlang.org/packages/redux_future) work for you, you're doing it right!  When you find yourself dealing with more complex scenarios, such as writing an Autocomplete UI, check out the Recipes below to see how Streams / Epics can make your life easier.
+
+## Dart 2
+
+  * Version 0.7.x supports Dart 1
+  * Version 0.8.0 and up supports Dart 2 
 
 ## Example
 
