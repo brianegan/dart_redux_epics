@@ -179,3 +179,62 @@ Stream<dynamic> autocompleteEpic(
   });
 }
 ```
+
+## Dependency Injection
+As of March 2018 there isn't a production-ready DI solution for Flutter. In the meantime depenendencies can be injected manually with either a Functional or an Object-Oriented style.
+
+### Functional
+```dart
+// epic_file.dart
+Epic<AppState> createEpic(WebService service) {
+  return (Stream<dynamic> actions, EpicStore<AppState> store) async* {
+    service.doSomething()...
+  }
+}
+```
+
+### OO
+```dart
+// epic_file.dart
+class MyEpic implements EpicClass<State> {
+  final WebService service;
+
+  MyEpic(this.service);
+
+  @override
+  Stream<dynamic> call(Stream<dynamic> actions, EpicStore<State> store) {
+    service.doSomething()...
+  } 
+}
+```
+
+#### Usage - Production
+In production code the epics can be created at the point where `combineEpics` is called. If you're using separate `main_<environment>.dart` files to [configure your application for different environments](https://stackoverflow.com/questions/47438564/how-do-i-build-different-versions-of-my-flutter-app-for-qa-dev-prod) you may want to pass the config to the `RealWebService` at this point.
+
+```dart
+// app_store.dart
+import 'package:epic_file.dart';
+...
+
+final apiBaseUrl = config.apiBaseUrl
+
+final functionalEpic = createEpic(new RealWebService(apiBaseUrl));
+// or
+final ooEpic = new MyEpic(new RealWebService(apiBaseUrl));
+
+static final epics = combineEpics<AppState>([
+    functionalEpic,
+    ooEpic,    
+    ...
+    ]);
+static final epicMiddleware = new EpicMiddleware(epics);
+```
+
+#### Usage - Testing
+```dart
+...
+final testFunctionalEpic = createEpic(new MockWebService());
+// or
+final testOOEpic = new MyEpic(new MockWebService());
+...
+```
