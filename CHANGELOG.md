@@ -1,3 +1,7 @@
+# 0.9.0
+
+  * Now works with Redux 3.0.0 & RxDart 0.16.5, which have been upgraded to work with Dart 2
+  
 # 0.8.0
 
   * Breaking Change: Dart 2 Support, Dart 1 supported by 0.7.x

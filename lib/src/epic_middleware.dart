@@ -33,7 +33,7 @@ class EpicMiddleware<State> extends MiddlewareClass<State> {
     if (!_isSubscribed) {
       _epics.stream
           .transform<dynamic>(
-              new FlatMapLatestStreamTransformer<Epic<State>, dynamic>(
+              new SwitchMapStreamTransformer<Epic<State>, dynamic>(
                   (epic) => epic(_actions.stream, new EpicStore(store))))
           .listen(store.dispatch);
 
@@ -47,7 +47,7 @@ class EpicMiddleware<State> extends MiddlewareClass<State> {
     // Future.delayed is an ugly hack to support async* functions.
     //
     // See: https://github.com/dart-lang/sdk/issues/22909
-    new Future.delayed(Duration.ZERO, () {
+    new Future.delayed(Duration.zero, () {
       _actions.add(action);
     });
   }

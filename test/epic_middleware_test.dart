@@ -9,19 +9,15 @@ import 'test_utils.dart';
 void main() {
   group('Epic Middleware', () {
     test('EpicClass can work as an Epic', () {
-      expect(new RecordingEpic(), new isInstanceOf<Epic<dynamic>>());
-    });
-
-    test('TypedEpic can work as an Epic', () {
       expect(
-        new TypedEpic<dynamic, Request1>(fire1TypedEpic),
-        new isInstanceOf<Epic<dynamic>>(),
+        new RecordingEpic<String>().call,
+        new isInstanceOf<Epic<String>>(),
       );
     });
 
     test('accepts an Epic that transforms one Action into another', () {
-      final epicMiddleware = new EpicMiddleware<dynamic>(fire1Epic);
-      final store = new Store<dynamic>(
+      final epicMiddleware = new EpicMiddleware<String>(fire1Epic);
+      final store = new Store<String>(
         latestActionReducer,
         middleware: [epicMiddleware],
       );
@@ -32,18 +28,18 @@ void main() {
 
       expect(
         store.onChange,
-        emitsInAnyOrder(<dynamic>[
-          new Request1(),
-          new Response1(),
+        emitsInAnyOrder(<String>[
+          new Request1().toString(),
+          new Response1().toString(),
         ]),
       );
     });
 
     test('accepts a TypedEpic that transforms one Action into another', () {
-      final epicMiddleware = new EpicMiddleware<dynamic>(
-        new TypedEpic<dynamic, Request1>(fire1TypedEpic),
+      final epicMiddleware = new EpicMiddleware<String>(
+        new TypedEpic<String, Request1>(fire1TypedEpic),
       );
-      final store = new Store<dynamic>(
+      final store = new Store<String>(
         latestActionReducer,
         middleware: [epicMiddleware],
       );
@@ -54,17 +50,17 @@ void main() {
 
       expect(
         store.onChange,
-        emitsInAnyOrder(<dynamic>[
-          new Request1(),
-          new Response1(),
+        emitsInAnyOrder(<String>[
+          new Request1().toString(),
+          new Response1().toString(),
         ]),
       );
     });
 
     test('can combine Epics', () async {
-      final epic = combineEpics<dynamic>([fire1Epic, fire2Epic]);
-      final epicMiddleware = new EpicMiddleware<dynamic>(epic);
-      final store = new Store<dynamic>(
+      final epic = combineEpics<String>([fire1Epic, fire2Epic]);
+      final epicMiddleware = new EpicMiddleware<String>(epic);
+      final store = new Store<String>(
         latestActionReducer,
         middleware: [epicMiddleware],
       );
@@ -76,22 +72,22 @@ void main() {
 
       expect(
         store.onChange,
-        emitsInAnyOrder(<dynamic>[
-          new Request1(),
-          new Response1(),
-          new Request2(),
-          new Response2(),
+        emitsInAnyOrder(<String>[
+          new Request1().toString(),
+          new Response1().toString(),
+          new Request2().toString(),
+          new Response2().toString(),
         ]),
       );
     });
 
     test('can combine TypedEpics', () {
-      final epic = combineEpics<dynamic>([
-        new TypedEpic<dynamic, Request1>(fire1TypedEpic),
-        new TypedEpic<dynamic, Request2>(fire2TypedEpic)
+      final epic = combineEpics<String>([
+        new TypedEpic<String, Request1>(fire1TypedEpic),
+        new TypedEpic<String, Request2>(fire2TypedEpic)
       ]);
-      final epicMiddleware = new EpicMiddleware<dynamic>(epic);
-      final store = new Store<dynamic>(
+      final epicMiddleware = new EpicMiddleware<String>(epic);
+      final store = new Store<String>(
         latestActionReducer,
         middleware: [epicMiddleware],
       );
@@ -103,18 +99,18 @@ void main() {
 
       expect(
         store.onChange,
-        emitsInAnyOrder(<dynamic>[
-          new Request1(),
-          new Response1(),
-          new Request2(),
-          new Response2(),
+        emitsInAnyOrder(<String>[
+          new Request1().toString(),
+          new Response1().toString(),
+          new Request2().toString(),
+          new Response2().toString(),
         ]),
       );
     });
 
     test('work with takeUntil epics', () async {
-      final epicMiddleware = new EpicMiddleware<dynamic>(cancelableEpic);
-      final store = new Store<dynamic>(
+      final epicMiddleware = new EpicMiddleware<String>(cancelableEpic);
+      final store = new Store<String>(
         latestActionReducer,
         middleware: [epicMiddleware],
       );
@@ -127,11 +123,11 @@ void main() {
 
       expect(
         store.onChange,
-        emitsInAnyOrder(<dynamic>[
-          new Request1(),
-          new Request2(),
-          new Request1(),
-          new Response1(),
+        emitsInAnyOrder(<String>[
+          new Request1().toString(),
+          new Request2().toString(),
+          new Request1().toString(),
+          new Response1().toString(),
         ]),
       );
     });
@@ -139,8 +135,8 @@ void main() {
     test('can replace the current Epic', () {
       final originalEpic = fire1Epic;
       final replacementEpic = fire2Epic;
-      final epicMiddleware = new EpicMiddleware<dynamic>(originalEpic);
-      final store = new Store<dynamic>(
+      final epicMiddleware = new EpicMiddleware<String>(originalEpic);
+      final store = new Store<String>(
         latestActionReducer,
         middleware: [epicMiddleware],
       );
@@ -157,17 +153,17 @@ void main() {
       expect(epicMiddleware.epic, equals(replacementEpic));
       expect(
         store.onChange,
-        emitsInAnyOrder(<dynamic>[
-          new Request1(),
-          new Request2(),
-          new Response2(),
+        emitsInAnyOrder(<String>[
+          new Request1().toString(),
+          new Request2().toString(),
+          new Response2().toString(),
         ]),
       );
     });
 
     test('can fire multiple actions from epics', () async {
-      final epicMiddleware = new EpicMiddleware<dynamic>(fireTwoActionsEpic);
-      final store = new Store<dynamic>(
+      final epicMiddleware = new EpicMiddleware<String>(fireTwoActionsEpic);
+      final store = new Store<String>(
         latestActionReducer,
         middleware: [epicMiddleware],
       );
@@ -178,35 +174,35 @@ void main() {
 
       expect(
         store.onChange,
-        emitsInAnyOrder(<dynamic>[
-          new Request1(),
-          new Response1(),
-          new Response2(),
+        emitsInAnyOrder(<String>[
+          new Request1().toString(),
+          new Response1().toString(),
+          new Response2().toString(),
         ]),
       );
     });
 
     test('passes the current state of the redux store to the Epic', () {
-      final epic = new RecordingEpic();
-      final epicMiddleware = new EpicMiddleware<dynamic>(epic);
-      final initialState = new Response1();
-      final store = new Store<dynamic>(
+      final epic = new RecordingEpic<String>();
+      final epicMiddleware = new EpicMiddleware<String>(epic);
+      final initialState = 'I';
+      final store = new Store<String>(
         latestActionReducer,
         initialState: initialState,
         middleware: [epicMiddleware],
       );
 
       scheduleMicrotask(() {
-        store.dispatch(new Request1());
+        store.dispatch('N');
       });
 
       expect(epic.states.stream, emits(initialState));
     });
 
     test('actions are dispatched through the entire chain', () {
-      final epic = combineEpics<dynamic>([pingEpic, pongEpic]);
-      final epicMiddleware = new EpicMiddleware<dynamic>(epic);
-      final store = new Store<dynamic>(
+      final epic = combineEpics<String>([pingEpic, pongEpic]);
+      final epicMiddleware = new EpicMiddleware<String>(epic);
+      final store = new Store<String>(
         latestActionReducer,
         middleware: [epicMiddleware],
       );
@@ -217,10 +213,10 @@ void main() {
 
       expect(
         store.onChange,
-        emitsInAnyOrder(<dynamic>[
-          new Request1(),
-          new Request2(),
-          new Response2(),
+        emitsInAnyOrder(<String>[
+          new Request1().toString(),
+          new Request2().toString(),
+          new Response2().toString(),
         ]),
       );
     });
