@@ -83,8 +83,6 @@ Stream<dynamic> searchEpic(
   Stream<PerformSearchAction> actions, 
   EpicStore<State> store,
 ) {
-  // Wrap our actions Stream as an Observable. This will enhance the stream with
-  // a bit of extra functionality.
   return actions
     .asyncMap((action) =>
       // No need to cast the action to extract the search term!
