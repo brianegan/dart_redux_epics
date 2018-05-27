@@ -2,6 +2,7 @@
 .packages
 packages
 pubspec.lock
+.dart_tool/
 .pub
 doc/
 coverage
