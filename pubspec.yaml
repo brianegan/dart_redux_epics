@@ -2,7 +2,7 @@ name: redux_epics
 author: Brian Egan <brian@brianegan.com>
 description: A redux.dart Middleware to support the use of Streams
 homepage: https://github.com/brianegan/dart_redux_epics
-version: 0.9.0
+version: 0.10.0
 
 environment:
   sdk: ">=2.0.0-dev.28.0 <3.0.0"

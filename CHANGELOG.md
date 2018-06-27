@@ -1,3 +1,7 @@
+# 0.10.0
+
+  * Updated to work with latest version of RxDart, which removes deprecated Stream methods in Dart 2
+  
 # 0.9.0
 
   * Now works with Redux 3.0.0 & RxDart 0.16.5, which have been upgraded to work with Dart 2
