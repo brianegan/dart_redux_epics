@@ -11,7 +11,7 @@ void main() {
     test('EpicClass can work as an Epic', () {
       expect(
         new RecordingEpic<String>().call,
-        new isInstanceOf<Epic<String>>(),
+        new TypeMatcher<Epic<String>>(),
       );
     });
 
@@ -37,7 +37,7 @@ void main() {
 
     test('can disable support for async generators', () {
       final epicMiddleware = new EpicMiddleware<String>(
-        fire1Epic,
+        new TypedEpic<String, Request1>(fire1TypedEpic),
         supportAsyncGenerators: false,
       );
       final store = new Store<String>(

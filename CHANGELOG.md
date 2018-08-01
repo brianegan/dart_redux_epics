@@ -1,5 +1,9 @@
 # 0.10.1
 
+  * Fix TypedEpic when not supporting async generators
+  
+# 0.10.2
+
   * Add option to async* functions for performance reasons. This option will be removed in the future when Dart supports running async* functions synchronously (https://github.com/dart-lang/sdk/issues/33818) 
 
 # 0.10.0
