@@ -39,6 +39,29 @@ void main() {
       );
     });
 
+    test('can disable support for async generators', () {
+      final epicMiddleware = new EpicMiddleware<dynamic>(
+        new TypedEpic<dynamic, Request1>(fire1TypedEpic),
+        supportAsyncGenerators: false,
+      );
+      final store = new Store<dynamic>(
+        latestActionReducer,
+        middleware: [epicMiddleware],
+      );
+
+      scheduleMicrotask(() {
+        store.dispatch(new Request1());
+      });
+
+      expect(
+        store.onChange,
+        emitsInAnyOrder(<dynamic>[
+          new Request1(),
+          new Response1(),
+        ]),
+      );
+    });
+
     test('accepts a TypedEpic that transforms one Action into another', () {
       final epicMiddleware = new EpicMiddleware<dynamic>(
         new TypedEpic<dynamic, Request1>(fire1TypedEpic),

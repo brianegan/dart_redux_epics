@@ -116,19 +116,14 @@ class TypedEpic<State, Action> extends EpicClass<State> {
   @override
   Stream<dynamic> call(Stream<dynamic> actions, EpicStore<State> store) {
     return epic(
-      actions.transform(new _OfTypeTransformer<Action>()),
+      actions.transform(new StreamTransformer<dynamic, Action>.fromHandlers(
+        handleData: (dynamic action, EventSink<Action> sink) {
+          if (action is Action) {
+            sink.add(action);
+          }
+        },
+      )),
       store,
     );
-  }
-}
-
-class _OfTypeTransformer<Action> implements StreamTransformer<dynamic, Action> {
-  @override
-  Stream<Action> bind(Stream<dynamic> actions) async* {
-    await for (dynamic action in actions) {
-      if (action is Action) {
-        yield action;
-      }
-    }
   }
 }

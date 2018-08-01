@@ -1,3 +1,7 @@
+# 0.7.1
+
+  * Provide option to disable async generator functions (async* functions).
+  
 # 0.7.0
 
   * Breaking Change: Actions you emit from your Epic are now re-dispatched through all Epics. They used to be simply forwarded to the next Middleware in the chain.  
