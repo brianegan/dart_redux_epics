@@ -23,10 +23,12 @@ class EpicMiddleware<State> extends MiddlewareClass<State> {
   final StreamController<Epic<State>> _epics =
       new StreamController.broadcast(sync: true);
 
+  final bool supportAsyncGenerators;
   Epic<State> _epic;
   bool _isSubscribed = false;
 
-  EpicMiddleware(this._epic);
+  EpicMiddleware(Epic<State> epic, {this.supportAsyncGenerators = true})
+      : _epic = epic;
 
   @override
   call(Store<State> store, dynamic action, NextDispatcher next) {
@@ -44,12 +46,16 @@ class EpicMiddleware<State> extends MiddlewareClass<State> {
 
     next(action);
 
-    // Future.delayed is an ugly hack to support async* functions.
-    //
-    // See: https://github.com/dart-lang/sdk/issues/22909
-    new Future.delayed(Duration.zero, () {
+    if (supportAsyncGenerators) {
+      // Future.delayed is an ugly hack to support async* functions.
+      //
+      // See: https://github.com/dart-lang/sdk/issues/33818
+      new Future.delayed(Duration.zero, () {
+        _actions.add(action);
+      });
+    } else {
       _actions.add(action);
-    });
+    }
   }
 
   /// Gets or replaces the epic currently used by the middleware.

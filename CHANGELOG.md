@@ -1,3 +1,7 @@
+# 0.10.1
+
+  * Add option to async* functions for performance reasons. This option will be removed in the future when Dart supports running async* functions synchronously (https://github.com/dart-lang/sdk/issues/33818) 
+
 # 0.10.0
 
   * Updated to work with latest version of RxDart, which removes deprecated Stream methods in Dart 2
