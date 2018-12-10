@@ -12,4 +12,6 @@ class EpicStore<State> {
 
   /// Returns the current state of the redux store
   State get state => _store.state;
+
+  Stream<State> get onChange => _store.onChange;
 }
