@@ -12,4 +12,4 @@ dependencies:
   redux: ">=3.0.0 <4.0.0"
 
 dev_dependencies:
-  test: ">=0.12.33 <0.13.0"
+  test: ">=0.12.33 <1.5.1"
