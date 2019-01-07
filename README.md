@@ -47,18 +47,25 @@ var store = new Store<State>(fakeReducer, middleware: [epicMiddleware]);
 ```
 ### Combining epics and normal middleware
 
-To combine epics and normal middleware the epic need to have type info. 
+To combine the epic Middleware and normal middleware, simply use both in the 
+list! Note: You may need to provide  
 
 ```dart
-var store = new Store<State>(
+var store = new Store<AppState>(
   fakeReducer,
-  middleware: fakeNormalMiddleware()
-    ..addAll(moreFakeNormalMiddleware())
-    ..addAll([EpicMiddleware<AppState>(exampleEpic)]),
+  middleware: [myMiddleware, EpicMiddleware<AppState>(exampleEpic)],
 );
 ```
 
+If you're combining two Lists, please make sure to use the `+` or the `addAll` 
+method with the cascade operator (`myList..addAll`). 
 
+```dart
+var store = new Store<AppState>(
+  fakeReducer,
+  middleware: [myMiddleware] + [EpicMiddleware<AppState>(exampleEpic)],
+);
+```
 
 ## Combining Epics
 

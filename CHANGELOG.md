@@ -1,3 +1,9 @@
+# 0.10.2
+
+  * Support latest version of RxDart (0.20.x) (thanks @MichaelMarner!)
+  * Add `onChange` stream to EpicStore (thanks @jnorkus)
+  * Add docs for combining EpicMiddleware with other Middleware (thanks @Henge9!)
+
 # 0.10.1
 
   * Fix TypedEpic when not supporting async generators
