@@ -1,3 +1,9 @@
+# 0.10.3
+
+  * Fixes pana issues:
+    * Provide longer description
+    * Provide example file
+
 # 0.10.2
 
   * Support latest version of RxDart (0.20.x) (thanks @MichaelMarner!)
