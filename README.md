@@ -45,6 +45,20 @@ import 'package:redux/redux.dart';
 var epicMiddleware = new EpicMiddleware(exampleEpic);
 var store = new Store<State>(fakeReducer, middleware: [epicMiddleware]);
 ```
+### Combining epics and normal middleware
+
+To combine epics and normal middleware the epic need to have type info. 
+
+```dart
+var store = new Store<State>(
+  fakeReducer,
+  middleware: fakeNormalMiddleware()
+    ..addAll(moreFakeNormalMiddleware())
+    ..addAll([EpicMiddleware<AppState>(exampleEpic)]),
+);
+```
+
+
 
 ## Combining Epics
 
