@@ -1,3 +1,8 @@
+# 0.10.4
+
+  * Add `onChange` to the EpicStore
+  * Bugfix for Dart 2.0.0 - import missing `dart:async`
+
 # 0.10.3
 
   * Fixes pana issues:

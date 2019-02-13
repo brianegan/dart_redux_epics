@@ -1,6 +1,7 @@
 language: dart
 sudo: false
 dart:
+- 2.0.0
 - dev
 with_content_shell: false
 dart_task:
