@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:redux/redux.dart';
 import 'package:redux_epics/src/epic.dart';
 
