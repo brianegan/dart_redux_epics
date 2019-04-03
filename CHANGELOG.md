@@ -1,3 +1,7 @@
+# 0.10.5
+
+  * Bump RxDart version compatibility to latest version
+
 # 0.10.4
 
   * Add `onChange` to the EpicStore
