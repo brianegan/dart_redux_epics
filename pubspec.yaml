@@ -2,13 +2,13 @@ name: redux_epics
 author: Brian Egan <brian@brianegan.com>
 description: A redux.dart Middleware that helps you perform side effects using Streams
 homepage: https://github.com/brianegan/dart_redux_epics
-version: 0.10.5
+version: 0.10.6
 
 environment:
   sdk: ">=2.0.0-dev.28.0 <3.0.0"
 
 dependencies:
-  rxdart: ">=0.18.0 <0.22.0"
+  rxdart: ">=0.18.0 <0.23.0"
   redux: ">=3.0.0 <4.0.0"
 
 dev_dependencies:

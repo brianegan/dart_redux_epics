@@ -1,6 +1,10 @@
+# 0.10.6
+
+  * Bump RxDart version compatibility to latest version: 0.22.x
+  
 # 0.10.5
 
-  * Bump RxDart version compatibility to latest version
+  * Bump RxDart version compatibility to latest version: 0.21.x
 
 # 0.10.4
 
