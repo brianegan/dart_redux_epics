@@ -243,5 +243,25 @@ void main() {
         ]),
       );
     });
+
+    test('combined epic called once during initialization', () {
+      int epicCalledTimes = 0;
+      Stream<dynamic> epicWithCallCount(
+        Stream<dynamic> actions,
+        EpicStore<String> store,
+      ) {
+        epicCalledTimes++;
+        return Stream<dynamic>.empty();
+      }
+
+      final store = new Store<String>(
+        latestActionReducer,
+        middleware: [
+          new EpicMiddleware<String>(combineEpics<String>([epicWithCallCount]))
+        ],
+      );
+      store.dispatch(new Request1());
+      expect(epicCalledTimes, 1);
+    });
   });
 }
