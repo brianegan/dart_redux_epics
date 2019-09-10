@@ -1,3 +1,7 @@
+# 0.11.0
+
+  * Bugfix: Initializing Combined Epics is performed only once. Combined Epics were previously initialized twice. Thanks @solid-software!
+
 # 0.10.6
 
   * Bump RxDart version compatibility to latest version: 0.22.x
