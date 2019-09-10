@@ -24,6 +24,7 @@ import 'package:rxdart/streams.dart';
 ///     ]);
 Epic<State> combineEpics<State>(List<Epic<State>> epics) {
   return (Stream<dynamic> actions, EpicStore<State> store) {
-    return new MergeStream<dynamic>(epics.map((epic) => epic(actions, store)));
+    return new MergeStream<dynamic>(
+        epics.map((epic) => epic(actions, store)).toList());
   };
 }
