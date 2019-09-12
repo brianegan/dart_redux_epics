@@ -17,7 +17,7 @@ Let's say your app has a search box. When a user submits a search term, you disp
 
 In this instance, our Epic will need to filter all incoming actions it receives to only the `Action` it is interested in: the `PerformSearchAction`. This will be done using the `where` method on Streams. Then, we need to make a network request with the search term using `asyncMap` method. Finally, we need to transform those results into an action that contains the search results. If an error has occurred, we'll want to return an error action so our app can respond accordingly.
 
-Here's what this looks like in code.
+Here's what the above description looks like in code.
 
 ```dart
 import 'dart:async';
