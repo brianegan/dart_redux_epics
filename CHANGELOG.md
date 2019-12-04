@@ -1,3 +1,7 @@
+# 0.12.0
+
+  * Breaking Change: Support for Redux 4.x - 5.0
+
 # 0.11.0
 
   * Bugfix: Initializing Combined Epics is performed only once. Combined Epics were previously initialized twice. Thanks @solid-software!

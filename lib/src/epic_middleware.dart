@@ -31,7 +31,7 @@ class EpicMiddleware<State> extends MiddlewareClass<State> {
       : _epic = epic;
 
   @override
-  call(Store<State> store, dynamic action, NextDispatcher next) {
+  void call(Store<State> store, dynamic action, NextDispatcher next) {
     if (!_isSubscribed) {
       _epics.stream
           .transform<dynamic>(
