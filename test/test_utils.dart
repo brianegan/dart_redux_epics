@@ -71,9 +71,7 @@ Stream<dynamic> fire1Epic(
   Stream<dynamic> actions,
   EpicStore<String> store,
 ) {
-  return actions
-      .where((dynamic action) => action is Request1)
-      .map<Response1>((dynamic action) => new Response1());
+  return actions.whereType<Request1>().mapTo<Response1>(Response1());
 }
 
 Stream<dynamic> fire2Epic(
@@ -82,7 +80,7 @@ Stream<dynamic> fire2Epic(
 ) async* {
   await for (dynamic action in actions) {
     if (action is Request2) {
-      yield new Response2();
+      yield Response2();
     }
   }
 }
@@ -91,7 +89,7 @@ Stream<dynamic> fire1TypedEpic(
   Stream<Request1> actions,
   EpicStore<String> store,
 ) {
-  return actions.map<Response1>((action) => new Response1());
+  return actions.mapTo<Response1>(Response1());
 }
 
 Stream<dynamic> fire2TypedEpic(
@@ -99,7 +97,7 @@ Stream<dynamic> fire2TypedEpic(
   EpicStore<String> store,
 ) async* {
   await for (Request2 _ in actions) {
-    yield new Response2();
+    yield Response2();
   }
 }
 
@@ -107,9 +105,7 @@ Stream<dynamic> pingEpic(
   Stream<dynamic> actions,
   EpicStore<String> store,
 ) {
-  return actions
-      .where((dynamic action) => action is Request1)
-      .map<Request2>((dynamic action) => new Request2());
+  return actions.whereType<Request1>().mapTo<Request2>(Request2());
 }
 
 Stream<dynamic> pongEpic(
@@ -118,7 +114,7 @@ Stream<dynamic> pongEpic(
 ) async* {
   await for (dynamic action in actions) {
     if (action is Request2) {
-      yield new Response2();
+      yield Response2();
     }
   }
 }
@@ -127,12 +123,11 @@ Stream<dynamic> cancelableEpic(
   Stream<dynamic> actions,
   EpicStore<String> store,
 ) {
-  return new Observable<dynamic>(actions)
-      .where((dynamic action) => action is Request1)
-      .flatMap<Response1>((dynamic action) =>
-          new Observable.fromFuture(new Future.value(new Response1()))
-              .takeUntil<dynamic>(
-                  actions.where((dynamic action) => action is Request2)));
+  return actions.whereType<Request1>().flatMap<Response1>((action) {
+    return Future.value(Response1())
+        .asStream()
+        .takeUntil<dynamic>(actions.whereType<Request2>());
+  });
 }
 
 Stream<dynamic> fireTwoActionsEpic(
@@ -140,14 +135,13 @@ Stream<dynamic> fireTwoActionsEpic(
   EpicStore<String> store,
 ) async* {
   await for (dynamic _ in actions) {
-    yield new Response1();
-    yield new Response2();
+    yield Response1();
+    yield Response2();
   }
 }
 
 class RecordingEpic<State> extends EpicClass<State> {
-  final StreamController<State> states =
-      new StreamController<State>(sync: true);
+  final StreamController<State> states = StreamController<State>(sync: true);
 
   @override
   Stream<dynamic> call(Stream<dynamic> actions, EpicStore<State> store) {

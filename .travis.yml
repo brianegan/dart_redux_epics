@@ -1,10 +1,16 @@
 language: dart
 sudo: false
 dart:
-- 2.0.0
-- dev
+  - dev
+  - stable
 with_content_shell: false
-dart_task:
-- test: --platform vm
-- dartanalyzer: --fatal-warnings lib
-- dartfmt
+script:
+  - pub global activate coverage
+  - dartfmt -n ./lib --set-exit-if-changed
+  - dartanalyzer --fatal-infos --fatal-warnings ./
+  - pub run test test/epic_middleware_test.dart
+  - dart --disable-service-auth-codes --enable-vm-service=8111 --pause-isolates-on-exit test/epic_middleware_test.dart &
+  - nohup pub global run coverage:collect_coverage --port=8111 --out=coverage.json --wait-paused --resume-isolates
+  - pub global run coverage:format_coverage --lcov --in=coverage.json --out=lcov.info --packages=.packages --report-on=lib
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

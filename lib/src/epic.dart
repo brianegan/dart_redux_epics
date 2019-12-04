@@ -51,8 +51,10 @@ import 'package:redux_epics/src/epic_store.dart';
 ///             .then((results) => new SearchResultsAction(results))
 ///             .catchError((error) => new SearchErrorAction(error)));
 ///     }
-typedef Stream<dynamic> Epic<State>(
-    Stream<dynamic> actions, EpicStore<State> store);
+typedef Epic<State> = Stream<dynamic> Function(
+  Stream<dynamic> actions,
+  EpicStore<State> store,
+);
 
 /// A class that acts as an [Epic], transforming one stream of actions into
 /// another stream of actions. Generally, [Epic] functions are simpler, but
@@ -116,7 +118,7 @@ class TypedEpic<State, Action> extends EpicClass<State> {
   @override
   Stream<dynamic> call(Stream<dynamic> actions, EpicStore<State> store) {
     return epic(
-      actions.transform(new StreamTransformer<dynamic, Action>.fromHandlers(
+      actions.transform(StreamTransformer<dynamic, Action>.fromHandlers(
         handleData: (dynamic action, EventSink<Action> sink) {
           if (action is Action) {
             sink.add(action);

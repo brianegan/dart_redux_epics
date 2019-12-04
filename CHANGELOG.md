@@ -1,3 +1,7 @@
+# 0.13.0
+
+  * Breaking Change: Support for RxDart 0.23.x
+
 # 0.12.0
 
   * Breaking Change: Support for Redux 4.x - 5.0
