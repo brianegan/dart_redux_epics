@@ -62,7 +62,7 @@ typedef Stream<dynamic> Epic<State>(
 ///
 ///     class ExampleEpic extends EpicClass<State> {
 ///       @override
-///       Stream<dynamic> map(Stream<dynamic> actions, EpicStore<State> store) {
+///       Stream<dynamic> call(Stream<dynamic> actions, EpicStore<State> store) {
 ///         return actions
 ///           .where((action) => action is PerformSearchAction)
 ///           .asyncMap((action) =>
