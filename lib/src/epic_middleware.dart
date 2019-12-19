@@ -19,9 +19,9 @@ import 'package:rxdart/transformers.dart';
 ///       initialState: [], middleware: [epicMiddleware]);
 class EpicMiddleware<State> extends MiddlewareClass<State> {
   final StreamController<dynamic> _actions =
-      new StreamController<dynamic>.broadcast();
+      StreamController<dynamic>.broadcast();
   final StreamController<Epic<State>> _epics =
-      new StreamController.broadcast(sync: true);
+      StreamController.broadcast(sync: true);
 
   final bool supportAsyncGenerators;
   Epic<State> _epic;
@@ -34,9 +34,7 @@ class EpicMiddleware<State> extends MiddlewareClass<State> {
   void call(Store<State> store, dynamic action, NextDispatcher next) {
     if (!_isSubscribed) {
       _epics.stream
-          .transform<dynamic>(
-              new SwitchMapStreamTransformer<Epic<State>, dynamic>(
-                  (epic) => epic(_actions.stream, new EpicStore(store))))
+          .switchMap<dynamic>((epic) => epic(_actions.stream, EpicStore(store)))
           .listen(store.dispatch);
 
       _epics.add(_epic);
@@ -50,7 +48,7 @@ class EpicMiddleware<State> extends MiddlewareClass<State> {
       // Future.delayed is an ugly hack to support async* functions.
       //
       // See: https://github.com/dart-lang/sdk/issues/33818
-      new Future.delayed(Duration.zero, () {
+      Future.delayed(Duration.zero, () {
         _actions.add(action);
       });
     } else {
