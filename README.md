@@ -1,7 +1,6 @@
 # Redux Epics 
 
 [![Travis Build Status](https://api.travis-ci.org/brianegan/dart_redux_epics.svg?branch=master)](https://travis-ci.org/brianegan/dart_redux_epics)
-[![codecov](https://codecov.io/gh/brianegan/dart_redux_epics/branch/master/graph/badge.svg)](https://codecov.io/gh/brianegan/dart_redux_epics)
 
 [Redux](https://pub.dartlang.org/packages/redux) is great for synchronous
 updates to a store in response to actions. However, working with complex
