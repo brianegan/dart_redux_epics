@@ -1,3 +1,7 @@
+# 0.14.0
+
+  * Breaking Change: Support for RxDart 0.24.x
+  
 # 0.13.0
 
   * Breaking Change: Support for RxDart 0.23.x
