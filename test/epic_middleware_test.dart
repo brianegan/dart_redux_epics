@@ -19,6 +19,7 @@ void main() {
       final epicMiddleware = EpicMiddleware<String>(fire1Epic);
       final store = Store<String>(
         latestActionReducer,
+        initialState: '',
         middleware: [epicMiddleware],
       );
 
@@ -42,6 +43,7 @@ void main() {
       );
       final store = Store<String>(
         latestActionReducer,
+        initialState: '',
         middleware: [epicMiddleware],
       );
 
@@ -64,6 +66,7 @@ void main() {
       );
       final store = Store<String>(
         latestActionReducer,
+        initialState: '',
         middleware: [epicMiddleware],
       );
 
@@ -85,6 +88,7 @@ void main() {
       final epicMiddleware = EpicMiddleware<String>(epic);
       final store = Store<String>(
         latestActionReducer,
+        initialState: '',
         middleware: [epicMiddleware],
       );
 
@@ -112,6 +116,7 @@ void main() {
       final epicMiddleware = EpicMiddleware<String>(epic);
       final store = Store<String>(
         latestActionReducer,
+        initialState: '',
         middleware: [epicMiddleware],
       );
 
@@ -135,6 +140,7 @@ void main() {
       final epicMiddleware = EpicMiddleware<String>(cancelableEpic);
       final store = Store<String>(
         latestActionReducer,
+        initialState: '',
         middleware: [epicMiddleware],
       );
 
@@ -161,6 +167,7 @@ void main() {
       final epicMiddleware = EpicMiddleware<String>(originalEpic);
       final store = Store<String>(
         latestActionReducer,
+        initialState: '',
         middleware: [epicMiddleware],
       );
 
@@ -188,6 +195,7 @@ void main() {
       final epicMiddleware = EpicMiddleware<String>(fireTwoActionsEpic);
       final store = Store<String>(
         latestActionReducer,
+        initialState: '',
         middleware: [epicMiddleware],
       );
 
@@ -227,6 +235,7 @@ void main() {
       final epicMiddleware = EpicMiddleware<String>(epic);
       final store = Store<String>(
         latestActionReducer,
+        initialState: '',
         middleware: [epicMiddleware],
       );
 
@@ -256,6 +265,7 @@ void main() {
 
       final store = Store<String>(
         latestActionReducer,
+        initialState: '',
         middleware: [
           EpicMiddleware<String>(combineEpics<String>([epicWithCallCount]))
         ],
