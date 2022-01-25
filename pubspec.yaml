@@ -1,7 +1,7 @@
 name: redux_epics
 description: A redux.dart Middleware that helps you perform side effects using Streams
 homepage: https://github.com/brianegan/dart_redux_epics
-version: 0.15.0
+version: 0.15.1
 
 environment:
   sdk: ">=2.12.0 <3.0.0"

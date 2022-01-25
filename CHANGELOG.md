@@ -1,6 +1,11 @@
+# 0.15.1
+
+  * Add support for rxdart 0.27.x
+  
 # 0.15.0
 
   * Breaking Change: Support for Null Safety
+
 # 0.14.0
 
   * Breaking Change: Support for RxDart 0.24.x
