@@ -4,7 +4,7 @@ homepage: https://github.com/brianegan/dart_redux_epics
 version: 0.15.2
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.12.0 <4.0.0"
 
 dependencies:
   rxdart: ^0.28.0
