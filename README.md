@@ -1,5 +1,7 @@
 # Redux Epics 
 
+[![CI Checks](https://github.com/brianegan/dart_redux_epics/actions/workflows/health_checks.yaml/badge.svg)](https://github.com/brianegan/dart_redux_epics/actions/workflows/health_checks.yaml)
+
 [Redux](https://pub.dartlang.org/packages/redux) is great for synchronous
 updates to a store in response to actions. However, working with complex
 asynchronous operations, such as autocomplete search experiences, can be a bit
