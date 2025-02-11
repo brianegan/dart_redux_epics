@@ -38,7 +38,7 @@ void main() {
   final store = Store<int>(
     reducer,
     initialState: 0,
-    middleware: [EpicMiddleware(jokerEpic)],
+    middleware: [EpicMiddleware(jokerEpic).call],
   );
 
   store.onChange.listen(print);

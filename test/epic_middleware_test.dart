@@ -20,7 +20,7 @@ void main() {
       final store = Store<String>(
         latestActionReducer,
         initialState: '',
-        middleware: [epicMiddleware],
+        middleware: [epicMiddleware.call],
       );
 
       scheduleMicrotask(() {
@@ -38,13 +38,13 @@ void main() {
 
     test('can disable support for async generators', () {
       final epicMiddleware = EpicMiddleware<String>(
-        TypedEpic<String, Request1>(fire1TypedEpic),
+        TypedEpic<String, Request1>(fire1TypedEpic).call,
         supportAsyncGenerators: false,
       );
       final store = Store<String>(
         latestActionReducer,
         initialState: '',
-        middleware: [epicMiddleware],
+        middleware: [epicMiddleware.call],
       );
 
       scheduleMicrotask(() {
@@ -62,12 +62,12 @@ void main() {
 
     test('accepts a TypedEpic that transforms one Action into another', () {
       final epicMiddleware = EpicMiddleware<String>(
-        TypedEpic<String, Request1>(fire1TypedEpic),
+        TypedEpic<String, Request1>(fire1TypedEpic).call,
       );
       final store = Store<String>(
         latestActionReducer,
         initialState: '',
-        middleware: [epicMiddleware],
+        middleware: [epicMiddleware.call],
       );
 
       scheduleMicrotask(() {
@@ -89,7 +89,7 @@ void main() {
       final store = Store<String>(
         latestActionReducer,
         initialState: '',
-        middleware: [epicMiddleware],
+        middleware: [epicMiddleware.call],
       );
 
       scheduleMicrotask(() {
@@ -110,14 +110,14 @@ void main() {
 
     test('can combine TypedEpics', () {
       final epic = combineEpics<String>([
-        TypedEpic<String, Request1>(fire1TypedEpic),
-        TypedEpic<String, Request2>(fire2TypedEpic)
+        TypedEpic<String, Request1>(fire1TypedEpic).call,
+        TypedEpic<String, Request2>(fire2TypedEpic).call,
       ]);
       final epicMiddleware = EpicMiddleware<String>(epic);
       final store = Store<String>(
         latestActionReducer,
         initialState: '',
-        middleware: [epicMiddleware],
+        middleware: [epicMiddleware.call],
       );
 
       scheduleMicrotask(() {
@@ -141,7 +141,7 @@ void main() {
       final store = Store<String>(
         latestActionReducer,
         initialState: '',
-        middleware: [epicMiddleware],
+        middleware: [epicMiddleware.call],
       );
 
       scheduleMicrotask(() {
@@ -168,7 +168,7 @@ void main() {
       final store = Store<String>(
         latestActionReducer,
         initialState: '',
-        middleware: [epicMiddleware],
+        middleware: [epicMiddleware.call],
       );
 
       expect(epicMiddleware.epic, equals(originalEpic));
@@ -196,7 +196,7 @@ void main() {
       final store = Store<String>(
         latestActionReducer,
         initialState: '',
-        middleware: [epicMiddleware],
+        middleware: [epicMiddleware.call],
       );
 
       scheduleMicrotask(() {
@@ -215,12 +215,12 @@ void main() {
 
     test('passes the current state of the redux store to the Epic', () {
       final epic = RecordingEpic<String>();
-      final epicMiddleware = EpicMiddleware<String>(epic);
+      final epicMiddleware = EpicMiddleware<String>(epic.call);
       final initialState = 'I';
       final store = Store<String>(
         latestActionReducer,
         initialState: initialState,
-        middleware: [epicMiddleware],
+        middleware: [epicMiddleware.call],
       );
 
       scheduleMicrotask(() {
@@ -236,7 +236,7 @@ void main() {
       final store = Store<String>(
         latestActionReducer,
         initialState: '',
-        middleware: [epicMiddleware],
+        middleware: [epicMiddleware.call],
       );
 
       scheduleMicrotask(() {
@@ -267,7 +267,9 @@ void main() {
         latestActionReducer,
         initialState: '',
         middleware: [
-          EpicMiddleware<String>(combineEpics<String>([epicWithCallCount]))
+          EpicMiddleware<String>(
+            combineEpics<String>([epicWithCallCount]),
+          ).call,
         ],
       );
       store.dispatch(Request1());

@@ -1,0 +1,27 @@
+name: Flutter
+on:
+  pull_request:
+  push: 
+    branches: 
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+
+      - name: Recursive pub get
+        run: find . -name 'pubspec.yaml' -execdir dart pub get \;
+    
+      - name: Check formatting
+        run: dart format --set-exit-if-changed .
+    
+      - name: Run Analyzer
+        run: dart analyze .
+    
+      - name: Run Tests
+        run: dart test

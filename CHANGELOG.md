@@ -1,3 +1,7 @@
+# 0.15.2
+
+* Add support for rxdart 0.28.x
+
 # 0.15.1
 
   * Add support for rxdart 0.27.x
